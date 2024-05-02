@@ -111,6 +111,22 @@ Crie um **diagrama de classes simplificado** para o projeto do Zoológico (veja 
 **Atenção**: o seu diagrama deve estar de acordo com o código que você implementou.
 Portanto, os tipos de relacionamento não devem ser avaliados pensando-se apenas nos nomes das classes, mas, sim, em como o código foi efetivamente implementado.
 
+```mermaid
+classDiagram
+    App *-- InterfaceUsuario
+    InterfaceUsuario *-- Zoo
+    Zoo *-- Tigre
+    Zoo *-- Chipanze
+    Zoo *-- Tucano
+    Zoo *-- Avestruz
+    Tigre --> Mamifero
+    Chipanze --> Mamifero
+    Tucano --> Ave
+    Avestruz --> Ave
+    Mamifero --> Animal
+    Ave --> Animal
+```
+
 ### Passo 2.2 - Diagrama de Classes Completo
 
 *Dica: valide com o professor o diagrama do passo anterior antes de fazer o diagrama completo*
@@ -134,15 +150,79 @@ Para isso, basta "escrever" o diagrama de classes usando a [sintaxe](https://mer
 
 ```mermaid
 classDiagram
-    App --> Classe A
-    ClasseA *-- ClasseB
-    ClasseA o-- ClasseC
-    ClasseB -- ClasseD
-    class ClasseA{
-        -atributoInteiro: int
-        +ClasseA(int)
-        +metodoX() boolean
-        +metodoY(String) void
+    App *-- InterfaceUsuario
+    InterfaceUsuario *-- Zoo
+    Zoo *-- Animal
+    Animal <-- Mamifero
+    Animal <-- Ave
+    Mamifero <-- Tigre
+    Mamifero <-- Chipanze
+    Ave <-- Tucano
+    Ave <-- Avestruz 
+    class App{
+      + (static) main(String[]) void
+    }
+    class InterfaceUsuario{
+      - entrada: Scanner
+      - zoo: Zoo
+      + InterfaceUsuario()
+      + executar() void
+      + exibirMenu() void
+      - tratarMenu(int) void
+      - pedirString(String) String
+      - cadastrarAnimal() void
+      - descreverAnimal() void
+      - listarAnimais() void
+      - listarAnimaisCompleto() void
+    }
+    class Zoo{
+      - animais: HashMap<String, Animal>
+      + Zoo()
+      + addAvestruz(String) void
+      + addTucano(String) void
+      + addTigre(String) void
+      + addChipanze(String) void
+      - addAnimal(Animal) void
+      + obterDescricao(String) String
+      + listarAnimais() String
+      + listarAnimaisCompleto() String
+    } 
+    class Animal{
+      - nome: String
+      - especie: String
+      - qtdPatas: int
+      - som: String
+      + Animal(String, String, int, String)
+      + getNome() String
+      + getEspecie() String
+      + getQtdPatas() String
+      + getSom() String
+      + getDescricao() String
+      + getDescricaoLonga() String
+    }
+    class Mamifero{
+      - corPelo: String
+      + Mamifero(String, String, int, String, String)
+      + getCorPelo() String
+      + getDescricaoLonga() String
+    }
+    class Ave{
+      - voaBem: boolean
+      + Ave(String, String, int, String, boolean)
+      + getVoaBem() boolean
+      + getDescricaoLonga() String
+    }
+    class Tigre{
+      + Tigre(String)
+    }
+    class Chipanze{
+      + Chipanze(String)
+    }
+    class Tucano{
+      + Tucano(String)
+    }
+    class Avestruz{
+      + Avestruz(String)
     }
 ```
 
@@ -162,7 +242,7 @@ Para isso, crie uma classe chamada `Teste` com um método `main` e, dentro dele,
 
 Explique abaixo, da forma mais completa possível, como é possível que a mesma variável `animal` possa ser usada para chamar métodos de objetos de classes diferentes.
 
->  ... escreva aqui a sua resposta ...
+>  Isso é possível devido ao Polimorfismo. A hierarquia de herança também define uma hierarquia de tipos, ou seja, uma variável de um tipo pode referenciar objetos de um subtipo. Então, a variável animal é polimórfica, ou seja, pode ter tipos dinâmicos (tipo que a variável resferencia, podendo ser subtipos do tipo declarado para a variável) diferentes em momentos diferentes da execussão do código e, por isso, consegue chamar métodos de objetos de subclasse diferentes.
 
 Ao terminar, faça um commit com as alterações da classe `Teste` e as alterações neste arquivo README.
 
@@ -176,25 +256,25 @@ Agora, altere o método `main` da classe `Teste` e faça o seguinte:
 
 O que é exibido?
 
->  ... escreva aqui a sua resposta ...
+>  Trigo e um(a) tigre que faz Grrrr e tem pelo laranja
 
 O método de descrição completa chamado inicialmente pertence a qual classe?
 
->  ... escreva aqui a sua resposta ...
+>  Animal
 
 Agora chame o método `exibirDescricaoCompleta` passando um objeto da classe `Avestruz`.
 
 O que é exibido?
 
->  ... escreva aqui a sua resposta ...
+>  Avex e um(a) Avestruz que faz AAA e voa mal
 
 O método de descrição completa chamado inicialmente pertence a qual classe?
 
->  ... escreva aqui a sua resposta ...
+>  Animal
 
 Explique, da forma mais completa possível, como o mesmo trecho de código (método `exibirDescricaoCompleta`) pode ser usado para chamar métodos de classes diferentes.
 
->  ... escreva aqui a sua resposta ...
+>  Isso ocorre devido ao polimorfismo. Como explicado no passo 3.1, animal é uma variável polimórfica. Quando se chama um método para o tipo dinâmico, o Java tenta utilizar o método daquela classe específica. Se o método estiver presente na classe do tipo dinâmico, ele será executado, caso contrário, o Java vai subindo na hierarquia de herança até encontrar o método apropriado para chamar. É esse comportamento que permite que o mesmo trecho de código possa ser usado para chamar métodos de classes diferentes, dependendo do tipo de objeto ao qual a variável polimórfica se refere naquele instante.
 
 Ao terminar, faça um novo commit com as alterações (na classe Teste e neste arquivo README).
 
@@ -221,42 +301,42 @@ Para todas as perguntas abaixo, você deve indicar exatamente a classe e o núme
 
 1. Indique pelo menos uma **variável polimórfica** utilizada no seu código e explique porque ela é uma variável polimórfica.
 
-> Nome da classe:
+> Nome da classe: Zoo
 > 
-> Número da linha:
+> Número da linha: 7
 > 
-> Nome da variável:
+> Nome da variável: animais
 > 
-> Explicação:
+> Explicação:Ela é considerada polimórfica porque referencia objetos das subclasse de Animal.
 
 
 2. Identifique algum ponto no código onde está sendo usado o **princípio da substituição** e explique o que é este princípio.
 
-> Nome da classe:
+> Nome da classe: Zoo
 > 
-> Número da linha:
+> Número da linha: 19
 > 
-> Explicação:
+> Explicação: Princípio da substituição é a possibilidade de usar um objeto de uma subclasse onde um objeto da superclasse é esperado, na linha 19, um objeto da classe Avestruz é atribuído a uma variável que espera um objeto da classe Animal.
 
 
 3. Identifique algum ponto no código onde uma variável tem **tipo estático diferente de seu tipo dinâmico** (indique quais são os tipos estático e dinâmico da variável neste ponto).
 
-> Nome da classe:
+> Nome da classe: Zoo
 > 
-> Número da linha:
+> Número da linha: 19
 > 
-> Nome da variável:
+> Nome da variável: avestruz
 > 
-> Tipo estático:
+> Tipo estático: Animal
 >
-> Tipo dinâmico:
+> Tipo dinâmico: Avestruz
 
 
 4. Identifique onde ocorre uma chamada de método na qual seja utilizado o conceito de **polimorfismo de método**.
 
-> Nome da classe:
+> Nome da classe: Zoo
 > 
-> Número da linha:
+> Número da linha: 74
 
 ### Passo 3.5 - Atualização do Diagrama de Classes
 
@@ -277,4 +357,3 @@ Você pode fazer isso usando arquivos de texto ou arquivo binário.
 Lembre-se:
 - De criar uma classe específica para tratar a persistência dos dados (representando a camada de acesso a dados).
 - E que essa nova classe não deve chamar métodos das classes Zoologico e nem InterfaceUsuario.
-
